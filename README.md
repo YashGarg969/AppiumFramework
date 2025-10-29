@@ -77,7 +77,7 @@ Open Terminal and navigate to target folder in terminal and then use the below c
 
 # 👨‍💻 Author
 Yash Garg
-
+📫 [Connect with me on LinkedIn] (https://www.linkedin.com/in/yash-garg-a9080a239)
 
 
 
