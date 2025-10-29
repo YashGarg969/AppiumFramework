@@ -1,0 +1,9 @@
+{
+  "automationName": "UiAutomator2",
+  "platformName": "Android",
+  "deviceName": "IQOO Z7 PRO 5G",
+  "appPackage": "com.vivo.calculator",
+  "appActivity": "com.vivo.calculator.Calculator",
+  "platformVersion": "15.0",
+  "noReset": false
+}

@@ -1,0 +1,5 @@
+{
+  "appPackage": "com.vivo.calculator",
+  "appActivity": "com.vivo.calculator.Calculator",
+  "appiumServerUrl": "http://127.0.0.1:4723/"
+}
