@@ -1,6 +1,8 @@
 package config;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import utilities.TestHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,5 +37,10 @@ public class AppConfigLoader {
      */
     public static Map<String,String> getAppConfigs() throws IOException {
         return mapper.readValue(new File("src/test/java/resources/appConfig.json"),Map.class);
+    }
+
+    public static Map<String,String> getAppConfigByIndex(int i) throws IOException {
+        JsonNode jsonNode = TestHelper.extractJsonFromJsonArray(new File("src/test/java/resources/appConfig.json"), i);
+        return mapper.convertValue(jsonNode, Map.class);
     }
 }
