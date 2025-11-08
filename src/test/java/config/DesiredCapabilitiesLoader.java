@@ -1,7 +1,9 @@
 package config;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.appium.java_client.android.options.UiAutomator2Options;
+import utilities.TestHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,8 @@ import java.util.Map;
  */
 public class DesiredCapabilitiesLoader {
 
+    private static final ObjectMapper mapper= new ObjectMapper();
+
     /**
      * Loads desired capabilities for the specified environment and returns
      * a fully configured {@link UiAutomator2Options} object.
@@ -36,7 +40,6 @@ public class DesiredCapabilitiesLoader {
     public static UiAutomator2Options loadDesiredCapabilities(String env) throws IOException {
         UiAutomator2Options options= new UiAutomator2Options();
 
-        ObjectMapper mapper= new ObjectMapper();
         Map<String,Object> desiredCapsMap;
         if(env.equalsIgnoreCase("EMULATOR"))
             desiredCapsMap= mapper.readValue(new File("src/test/java/resources/desiredCapabilitiesEmulator.json"),Map.class);
@@ -62,6 +65,50 @@ public class DesiredCapabilitiesLoader {
                 }
             } catch (Exception e) {
                 System.out.println("Could not set capability: " + key + " -> " + e.getMessage());
+            }
+        }
+        return options;
+    }
+
+    /**
+     *
+     * Loads desired capabilities for the specified environment and returns
+     * a fully configured {@link UiAutomator2Options} object.
+     * This method can be used in cases where we want to run tests in multiple devices simultaneously.
+     * <p>The index determines which mobile device configuration to load for running the tests. </p>
+     *
+     * @param env
+     * @param index
+     * @return a configured {@link UiAutomator2Options} instance with all capabilities applied.
+     * @throws IOException if the capability file is missing or cannot be parsed.
+     */
+    public static UiAutomator2Options loadDesiredCapabilitiesByIndex(String env, int index) throws IOException {
+        UiAutomator2Options options = new UiAutomator2Options();
+        Map<String, Object> desiredCapsMap;
+        JsonNode jsonNode = null;
+        if (env.equalsIgnoreCase("EMULATOR")) {
+            jsonNode = TestHelper.extractJsonFromJsonArray(new File("src/test/java/resources/desiredCapabilitiesEmulator.json"), index);
+        } else if (env.equalsIgnoreCase("REAL")) {
+            jsonNode = TestHelper.extractJsonFromJsonArray(new File("src/test/java/resources/desiredCapabilities.json"), index);
+        } else
+            throw new IOException(String.format("Env: {%s} does not exist", env));
+        desiredCapsMap = mapper.convertValue(jsonNode, Map.class);
+
+        for (Map.Entry<String, Object> entry : desiredCapsMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            String methodName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1);
+            try {
+                if (value instanceof Boolean) {
+                    Method method = UiAutomator2Options.class.getMethod(methodName, boolean.class);
+                    method.invoke(options, (Boolean) value);
+                } else {
+                    Method method = UiAutomator2Options.class.getMethod(methodName, value.getClass());
+                    method.invoke(options, value);
+                }
+            } catch (Exception e) {
+                System.out.println("Could not set capability: " + key + " -> " + e+ " method"+ methodName);
             }
         }
         return options;

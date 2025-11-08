@@ -1,9 +1,11 @@
-{
-  "automationName": "UiAutomator2",
-  "platformName": "Android",
-  "deviceName": "IQOO Z7 PRO 5G",
-  "appPackage": "com.yashgarg969_androiddev.callcraze",
-  "appActivity": "com.yashgarg969_androiddev.callcraze.MainActivity",
-  "platformVersion": "15.0",
-  "noReset": false
-}
+[
+  {
+    "automationName": "UiAutomator2",
+    "platformName": "Android",
+    "deviceName": "",
+    "appPackage": "",
+    "appActivity": "",
+    "platformVersion": "",
+    "noReset": false
+  }
+]

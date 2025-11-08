@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Appium Test Suite">
-    <parameter name="env" value="REAL"/>
-    <test name="Calculator Test">
+    <test name="SamsungTest">
+        <parameter name="env" value="REAL"/>
+        <parameter name="index" value="1"/>
+        <parameter name="port" value="8201"/>
         <classes>
-            <class name="tests.CalculatorTest"/>
+            <class name="tests.DemoTest"/>
+        </classes>
+    </test>
+    <test name="VivoTest">
+        <parameter name="env" value="REAL"/>
+        <parameter name="index" value="0"/>
+        <parameter name="port" value="8200"/>
+        <classes>
+            <class name="tests.DemoTest"/>
+        </classes>
+    </test>
+    <test name="CalculatorTest_Vivo">
+        <parameter name="env" value="REAL"/>
+        <parameter name="index" value="0"/>
+        <parameter name="port" value="8200"/>
+        <classes>
+            <class name="tests.CalculatorTest"></class>
         </classes>
     </test>
 </suite>

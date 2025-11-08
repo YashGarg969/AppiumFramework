@@ -4,6 +4,7 @@ import config.AppConfigLoader;
 import config.DesiredCapabilitiesLoader;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
+import org.testng.ITestContext;
 import org.testng.annotations.*;
 import org.testng.log4testng.Logger;
 import utilities.Utils;
@@ -25,6 +26,8 @@ import java.util.Map;
 
 public class BaseTest {
     protected String env;
+    protected int index;
+    protected int systemPort;
     protected AndroidDriver driver;
     protected String appPackage;
     protected URL appiumServerUrl;
@@ -41,17 +44,20 @@ public class BaseTest {
      * @throws Exception if driver setup fails or configurations are missing.
      */
 
-    @Parameters({"env"})
+    @Parameters({"env","index","port"})
     @BeforeTest
-    public void setupDriver(@Optional("Emulator") String env) throws Exception {
+    public void setupDriver(@Optional("Emulator") String env, @Optional("0") String index, @Optional("8200") String port) throws Exception {
 
-        this.env = env;
+        this.env= env;
+        this.index= Integer.parseInt(index);
+        this.systemPort= Integer.parseInt(port);
         logger.info(String.format("Setting up driver for env:- %s",env));
 
-        UiAutomator2Options uiAutomator2Options = DesiredCapabilitiesLoader.loadDesiredCapabilities(env);
-        Map<String, String> appConfigs = AppConfigLoader.getAppConfigs();
+        UiAutomator2Options uiAutomator2Options = DesiredCapabilitiesLoader.loadDesiredCapabilitiesByIndex(env, this.index);
+        uiAutomator2Options.setSystemPort(systemPort);
         this.appPackage = String.valueOf(uiAutomator2Options.getAppPackage());
-        this.appiumServerUrl = URI.create(appConfigs.get("appiumServerUrl")).toURL();
+        Map<String, String> appConfigByIndex = AppConfigLoader.getAppConfigByIndex(this.index);
+        appiumServerUrl= URI.create(appConfigByIndex.get("appiumServerUrl")).toURL();
 
         logger.info(String.format("Appium Server is running on %s",appiumServerUrl));
         driver = new AndroidDriver(appiumServerUrl, uiAutomator2Options);
@@ -68,11 +74,13 @@ public class BaseTest {
      */
 
     @AfterTest
-    public void tearDown() {
+    public void tearDown(ITestContext iTestContext) {
+        String testName= iTestContext.getName();
+        String videoName= String.format("%s_%s.mp4",testName,systemPort);
         if (driver != null) {
             try {
-                Utils.saveVideo(driver,"target/video/TestVideo.mp4");
-                Utils.attachVideoToAllure("TestExecutionVideo","target/video/TestVideo.mp4");
+                Utils.saveVideo(driver,String.format("target/video/%s",videoName));
+                Utils.attachVideoToAllure("TestExecutionVideo",String.format("target/video/%s",videoName));
 
                 if (appPackage != null && !appPackage.trim().isEmpty())
                     driver.removeApp(appPackage);
