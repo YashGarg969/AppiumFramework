@@ -75,6 +75,11 @@ Open Terminal and navigate to target folder in terminal and then use the below c
 🔧 Keep checking this repository for future enhancements, integrations, and optimizations.
 💬 Contributions and ideas are always welcome.
 
+# Allure Report Screenshot
+<img src="https://raw.githubusercontent.com/YashGarg969/AppiumFramework/master/src/test/java/assets/AllureReportScreenshot.png" alt="Allure Report Screenshot" width="600"/>
+
+
+
 # 👨‍💻 Author
 Yash Garg
 📫 [Connect with me on LinkedIn] (https://www.linkedin.com/in/yash-garg-a9080a239)
